@@ -107,7 +107,7 @@ models
 data/
 output
 .vscode/settings.json
-debug
+debugs
 result*
 *.jpg
 *.png
