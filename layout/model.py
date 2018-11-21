@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 class CRAFTLayout:
     def __init__(self,
                  weights_path,
+                 link_refine=False,
                  text_threshold=0.7,
                  low_text=0.4,
                  link_threshold=0.4,
@@ -49,6 +50,7 @@ class CRAFTLayout:
 
         self.cuda = torch.cuda.is_available()
 
+        self.link_refine = link_refine
         self.text_threshold = text_threshold
         self.link_threshold = link_threshold
         self.low_text = low_text
@@ -71,8 +73,11 @@ class CRAFTLayout:
                 craft_weights_path, cuda=self.cuda, eval=True)
 
             # Load LinkRefiner
-            self.refine_net = craft_utils.load_model(
-                refine_net_weights_path, cuda=self.cuda, eval=True, refine_net=True)
+            if self.link_refine:
+                self.refine_net = craft_utils.load_model(
+                    refine_net_weights_path, cuda=self.cuda, eval=True, refine_net=True)
+            else:
+                self.refine_net = None
 
     def _convert_format(self, result):
         converted = []
@@ -83,7 +88,7 @@ class CRAFTLayout:
             })
         return converted
 
-    def process(self, image, debug_path=None, page_num=1):
+    def process(self, image, debug_path=None):
         start_time = time.time()
 
         # resize
@@ -106,8 +111,9 @@ class CRAFTLayout:
         score_link = y[0, :, :, 1].cpu().data.numpy()
 
         # refine link
-        y_refiner = self.refine_net(y, feature)
-        score_link = y_refiner[0, :, :, 0].cpu().data.numpy()
+        if self.link_refine:
+            y_refiner = self.refine_net(y, feature)
+            score_link = y_refiner[0, :, :, 0].cpu().data.numpy()
 
         # Post-processing
         boxes, polys = craft_utils.getDetBoxes(
@@ -129,7 +135,7 @@ class CRAFTLayout:
                 './debugs/', str(uuid.uuid4())) if debug_path is None else debug_path
             os.makedirs(debug_path, exist_ok=True)
             cv2.imwrite(os.path.join(
-                debug_path, 'mask_layout_{}.jpg'.format(page_num)), ret_score_text)
-            craft_utils.saveResult(os.path.join(debug_path, 'layout_{}.jpg'.format(page_num)), image[:, :, ::-1], polys, dirname=debug_path)
+                debug_path, 'mask_layout.jpg'), ret_score_text)
+            craft_utils.saveResult(os.path.join(debug_path, 'layout.jpg'), image[:, :, ::-1], polys, dirname=debug_path)
 
         return self._convert_format(polys)
