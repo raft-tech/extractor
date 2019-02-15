@@ -7,13 +7,11 @@ from collections import OrderedDict
 import cv2
 import numpy as np
 import torch
+
 from layout.basenet.craft import CRAFT
 from layout.basenet.refinenet import RefineNet
 
-logging.getLogger(__name__).addHandler(logging.NullHandler())
-
-logger = logging.getLogger(__name__)
-
+logging.getLogger().setLevel(logging.INFO)
 
 """ auxilary functions """
 # unwarp corodinates
@@ -317,7 +315,7 @@ def load_model(weight_path, cuda=False, freeze=False, eval=True, refine_net=Fals
     else:
         net = CRAFT(freeze=freeze)
 
-    logger.info('Loading weights from checkpoint (' + weight_path + ')')
+    logging.info('Loading weights from {}'.format(weight_path))
     if cuda:
         net.load_state_dict(copyStateDict(torch.load(weight_path)))
     else:

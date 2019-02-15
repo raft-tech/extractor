@@ -57,6 +57,4 @@ def imread_buffer(buffer_):
 
 
 def pprint(raw_dict):
-    dict = copy.deepcopy(raw_dict)
-    dict.pop('raw_img', None)
-    print(json.dumps(dict, indent=4, ensure_ascii=False))
+    return json.dumps(copy.deepcopy(raw_dict), indent=4, ensure_ascii=False)

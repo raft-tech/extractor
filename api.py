@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+import logging
 import os
 import time
 import traceback
@@ -16,9 +17,10 @@ from main import SceneTextExtractor
 
 app = Flask(__name__)
 CORS(app)
+logging.getLogger().setLevel(logging.INFO)
 
 models = SceneTextExtractor()
-print("Loaded all models")
+logging.info("Loaded all models")
 
 
 def read_image(img_bytes):

@@ -1,3 +1,4 @@
+import logging
 import traceback
 from argparse import Namespace
 
@@ -10,6 +11,7 @@ from ocr.net.str import Model
 from ocr.utils import (AttnLabelConverter, Averager, CTCLabelConverter,
                        normalize)
 
+logging.getLogger().setLevel(logging.INFO)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
@@ -83,7 +85,7 @@ class STROCR():
         self.model = torch.nn.DataParallel(model).to(device)
 
         # Load weights
-        print('Loading pretrained model from', weights_path)
+        logging.info('Loading weights from {}'.format(weights_path))
         self.model.load_state_dict(torch.load(
             weights_path, map_location=device))
 
