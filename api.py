@@ -20,7 +20,6 @@ CORS(app)
 logging.getLogger().setLevel(logging.INFO)
 
 models = SceneTextExtractor()
-logging.info("Loaded all models")
 
 
 def read_image(img_bytes):

@@ -27,6 +27,7 @@ class SceneTextExtractor():
             logging.info('Debug mode is on')
         self.debug = debug
         self.debug_dir = './debugs/'
+        logging.info("Loaded all models")
 
     def process(self, image, debug_id=None):
         debug_dir = None

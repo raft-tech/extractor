@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+import tempfile
 import time
 import uuid
-import tempfile
 from zipfile import ZipFile
 
 import cv2
 import numpy as np
 import torch
-from layout.utils import craft_utils, imgproc
 from torch.autograd import Variable
 
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+from layout.utils import craft_utils, imgproc
 
-logger = logging.getLogger(__name__)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class CRAFTLayout:
@@ -126,8 +125,12 @@ class CRAFTLayout:
             if polys[k] is None:
                 polys[k] = boxes[k]
 
+        # sort result from top to bottom, left to right
+        polys = imgproc.sort_result(polys, image)
+
         if self.debug:
-            logger.info('Took {} secs'.format(time.time() - start_time))
+            logging.info('Layout analysis took {} secs'.format(
+                time.time() - start_time))
             render_img = score_text.copy()
             render_img = np.hstack((render_img, score_link))
             ret_score_text = imgproc.cvt2HeatmapImg(render_img)
@@ -136,6 +139,7 @@ class CRAFTLayout:
             os.makedirs(debug_path, exist_ok=True)
             cv2.imwrite(os.path.join(
                 debug_path, 'mask_layout.jpg'), ret_score_text)
-            craft_utils.saveResult(os.path.join(debug_path, 'layout.jpg'), image[:, :, ::-1], polys, dirname=debug_path)
+            craft_utils.saveResult(os.path.join(
+                debug_path, 'layout.jpg'), image[:, :, ::-1], polys, dirname=debug_path)
 
         return self._convert_format(polys)
