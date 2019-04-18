@@ -1,5 +1,6 @@
 import copy
 import json
+import os
 
 import cv2
 import imutils
@@ -58,3 +59,15 @@ def imread_buffer(buffer_):
 
 def pprint(raw_dict):
     return json.dumps(copy.deepcopy(raw_dict), indent=4, ensure_ascii=False)
+
+
+def draw_full_result(doc, image, debug_dir):
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    for each_word in doc:
+        image = cv2.drawContours(
+            image, [np.array(each_word['location'])], -1, (0, 255, 0), 3)
+        text_x, text_y, _, _ = cv2.boundingRect(
+            np.array(each_word['location']))
+        image = cv2.putText(image, '{}: {}'.format(each_word['id'], each_word['text']), (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX,
+                            0.8, (255, 255, 255), 2, cv2.LINE_AA)
+    cv2.imwrite(os.path.join(debug_dir, 'final.jpg'), image)

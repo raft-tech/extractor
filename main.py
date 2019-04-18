@@ -9,10 +9,13 @@ import numpy as np
 from ocr.model import STROCR
 
 from layout.model import CRAFTLayout
-from utils import cut_polygon_deskew, pprint, save_json
+from utils import cut_polygon_deskew, draw_full_result, pprint, save_json
 
 logging.getLogger().setLevel(logging.INFO)
-
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 class SceneTextExtractor():
     def __init__(self,
@@ -59,6 +62,7 @@ class SceneTextExtractor():
             logging.info('OCR took {} secs'.format(time.time() - start_time))
             save_json(doc, os.path.join(
                 debug_dir, 'layout_ocr_{}.json'.format(index)))
+            draw_full_result(doc, image, debug_dir)
             logging.info('Result: {}'.format(pprint(doc)))
         return doc
 
