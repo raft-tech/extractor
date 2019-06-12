@@ -1,4 +1,4 @@
-# Raft Extractor API
+# Health Star Informatics Scence Text Extractor API
 
 ## Objectives
 1. Detect Regions of text in Real world images
@@ -12,14 +12,25 @@ A Web API that:
 1. Takes an image as input and returns X and Y coordinates for bounding boxes (step 1 in objectives)
 2. Takes an image as input and returns the text extracted from the image as string
 
-
 ## How to setup
 - Install required dependencies: `pip install -r requirements.txt`
 - Run the production API with `gunicorn`:
 ```bash
 gunicorn --bind 0.0.0.0:8080 wsgi:app --timeout 100 --graceful-timeout 50 --max-requests-jitter 40 --max-requests 40 -w 2  --keep-alive 1
 ```
-- There will be 3 API endpoint running at `0.0.0.0:8080`:
-    + `\` which can handle full flow from layout analysis to deskew and OCR.
-    + `\layout` for layout analysis only.
-    + `\ocr` for OCR only.
+
+## Docker
+If you prefer using a docker container. Build a docker images with this command:
+```bash
+docker build . -t scene_text_extractor
+```
+And run it with:
+```bash
+docker run -p 8080:8080 -it scene_text_extractor
+```
+
+## API
+There will be 3 API endpoint running at `0.0.0.0:8080`
++ `\` which can handle full flow from layout analysis to deskew and OCR.
++ `\layout` for layout analysis only.
++ `\ocr` for OCR only.
