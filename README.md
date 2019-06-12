@@ -1,16 +1,10 @@
 # Health Star Informatics Scence Text Extractor API
+Detect and extract regions of text in real world images
 
-## Objectives
-1. Detect Regions of text in Real world images
-    - Draw bounding boxes around all regions of text found
-    - Example Image: ![](https://i.stack.imgur.com/dqs8L.jpg)
-2. (based on 1) - Extract (OCR) text out of the bounding boxes found in Real world images in step 1
-    - Straighten the text if it is skewed
+Input|Output
+--|--
+![](./fig/sample_input.jpg)|![](./fig/sample_output.jpg)
 
-## Goal
-A Web API that:
-1. Takes an image as input and returns X and Y coordinates for bounding boxes (step 1 in objectives)
-2. Takes an image as input and returns the text extracted from the image as string
 
 ## How to setup
 - Install required dependencies: `pip install -r requirements.txt`
@@ -34,3 +28,62 @@ There will be 3 API endpoint running at `0.0.0.0:8080`
 + `\` which can handle full flow from layout analysis to deskew and OCR.
 + `\layout` for layout analysis only.
 + `\ocr` for OCR only.
+
+You can call the API like this:
+![](./fig/how_to_call.jpg)
+
+Here is the sample output from the API:
+```json
+{
+    "prediction": [
+        {
+            "confidents": 0.9884889125823975,
+            "id": 1,
+            "location": [
+                [
+                    238,
+                    149
+                ],
+                [
+                    328,
+                    123
+                ],
+                [
+                    337,
+                    155
+                ],
+                [
+                    248,
+                    181
+                ]
+            ],
+            "text": "ROADS"
+        },
+        {
+            "confidents": 0.9965834617614746,
+            "id": 2,
+            "location": [
+                [
+                    227,
+                    148
+                ],
+                [
+                    257,
+                    177
+                ],
+                [
+                    180,
+                    257
+                ],
+                [
+                    150,
+                    228
+                ]
+            ],
+            "text": "BORDER"
+        },
+    ],
+    "run_time": "3.76",
+    "success": true
+}
+```
