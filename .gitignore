@@ -109,6 +109,4 @@ output
 .vscode/settings.json
 debugs
 result*
-*.jpg
-*.png
 *.txt
