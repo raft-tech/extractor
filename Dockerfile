@@ -1,4 +1,4 @@
-FROM python:3.6.8
+FROM python:3.10.0b2
 
 COPY . /scene_text_extractor
 WORKDIR /scene_text_extractor
